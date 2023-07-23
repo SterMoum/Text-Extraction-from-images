@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <title>Image Upload Form</title>
+</head>
+
+<body>
+    <h2 class="center">Upload an Image</h2>
+    
+    <form class="center" action="{{ request.path }}" method="post" enctype="multipart/form-data">
+
+        <input type="file" name="imageFile" id="imageFile" accept="image/*" onchange="displayImage(event)">
+        <input type="submit" value="Tesseract!">
+
+    </form>
+    <br>
+    <div class="center">
+        <textarea rows="10" cols="50" readonly>{{ str_tesseract }}</textarea>
+        <img id="uploadedImage" src="#" alt="Uploaded Image" style="max-width: 100%; display: none;"> <br><br>
+        <img id="boxImage" src="data:image/png;base64,{{ img_box_base64 }}" alt="Image with Boxes" style="max-width: 100%;">
+    </div>
+      
+    {%- for category, message in get_flashed_messages(with_categories = true) %}
+        {{ message }}
+    {%- endfor %}
+
+</body>
+
+<script>
+    function displayImage(event) {
+        var file = event.target.files[0];
+        var image = document.getElementById("uploadedImage");
+        image.src = URL.createObjectURL(file);
+        image.style.display = "block";
+    }
+</script>
+
+</html>
