@@ -21,10 +21,12 @@
         <img id="uploadedImage" src="#" alt="Uploaded Image" style="max-width: 100%; display: none;"> <br><br>
         <img id="boxImage" src="data:image/png;base64,{{ img_box_base64 }}" alt="Image with Boxes" style="max-width: 100%;">
     </div>
-      
-    {%- for category, message in get_flashed_messages(with_categories = true) %}
-        {{ message }}
-    {%- endfor %}
+    
+    <div class="center">
+        {%- for category, message in get_flashed_messages(with_categories = true) %}
+            {{ message }}
+        {%- endfor %}
+    </div>
 
 </body>
 

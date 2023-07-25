@@ -1,4 +1,4 @@
-from flask import Flask,render_template, request
+from flask import Flask,render_template, request, flash
 import pytesseract
 import PIL.Image
 import cv2
@@ -11,9 +11,13 @@ UPLOAD_FOLDER = './samples'
 app = Flask(__name__)
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.secret_key = "12sad2d"
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    str_tesseract = ""  # Set a default value for str_tesseract
+    img_box_base64 = None
+
     if request.method == 'POST':
         #Get image from user
         img = request.files['imageFile']
@@ -27,6 +31,8 @@ def index():
             img_path = os.path.join(app.config['UPLOAD_FOLDER'], imgName)
             str_tesseract = pytesseract.image_to_string(PIL.Image.open(img_path))
 
+            if not str_tesseract:
+                flash("Tesseract could not recognize text", "error")
             #Generate box image
             img_box = cv2.imread(img_path)
             height, width, _ = img_box.shape
