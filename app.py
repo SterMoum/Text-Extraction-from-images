@@ -5,6 +5,7 @@ import cv2
 import os
 from werkzeug.utils import secure_filename
 import base64
+import re
 
 UPLOAD_FOLDER = './samples'
 
@@ -15,6 +16,7 @@ app.secret_key = "12sad2d"
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    lot_number_format = r'\d{3}/\d{2}-\d{2}'
     str_tesseract = ""  # Set a default value for str_tesseract
     img_box_base64 = None
 
@@ -31,8 +33,14 @@ def index():
             img_path = os.path.join(app.config['UPLOAD_FOLDER'], imgName)
             str_tesseract = pytesseract.image_to_string(PIL.Image.open(img_path))
 
+            #If tesseract fails to recognize text
             if not str_tesseract:
                 flash("Tesseract could not recognize text", "error")
+
+            #If lot number format is not correct
+            if not re.match(lot_number_format, str_tesseract):
+                flash("Invalid LOT number format", "error")
+                
             #Generate box image
             img_box = cv2.imread(img_path)
             height, width, _ = img_box.shape
